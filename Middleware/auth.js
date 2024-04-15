@@ -6,16 +6,13 @@ const auth = {
         try {
             const token = request.cookies.token;
 
-            // if the token is missing, return an error
             if (!token) {
                 return response.status(401).json({ message: 'Token missing' });
             }
 
-            // verify the token
             try {
                 const decodedToken = jwt.verify(token, config.JWT_SECRET);
 
-                // add the decoded token to the request object
                 request.userId = decodedToken.id;
                 next();
             } catch(error) {
