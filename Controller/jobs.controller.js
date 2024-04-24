@@ -1,12 +1,18 @@
 import Job from "../Models/job.schema.js";
+import nodemailer from "nodemailer";
 
 const jobController = {
     createJob: async (request, response) => {
         try {
-            const { company, position, jobLocation, jobStatus, jobType } = request.body;
+            const { name, image, email, company, position, experience, jobLocation, jobStatus, jobType, performance } = request.body;
             const newJob = new Job({
+                name,
+                image,
+                email,
                 company,
                 position,
+                performance,
+                experience,
                 jobLocation,
                 jobStatus,
                 jobType,
@@ -43,10 +49,15 @@ const jobController = {
     updateJob: async (request, response) => {
         try {
             const { id } = request.params;
-            const { company, position, jobLocation, jobStatus, jobType } = request.body;
+            const { name, company, image, email, position, experience, performance, jobLocation, jobStatus, jobType } = request.body;
             const updatedJob = await Job.findByIdAndUpdate(id, {
+                name,
+                image,
+                email,
                 company,
                 position,
+                experience,
+                performance,
                 jobLocation,
                 jobStatus,
                 jobType
@@ -71,6 +82,44 @@ const jobController = {
         } catch(error) {
             response.status(500).json({ message: error.message });
         }
+    },
+
+    sendMail: async (request, response) => {
+        const {email, subject, message, html, attachments} = request.body;
+        console.log(request.cookies);
+        try {
+            // console.log(request.pass);
+            // const testAccount = await nodemailer.createTestAccount();
+            const transporter = nodemailer.createTransport({
+                // host: "smtp.ethereal.email",
+                // secure: false,
+                // port: 589,
+                // auth: {
+                //     user: testAccount.user,
+                //     pass: testAccount.pass
+                // },
+                service: "gmail",
+                auth: {
+                    user: request.cookies.email,
+                    pass: request.cookies.pass,
+                }
+            });
+    
+            const mail_config = {
+                from: "shark.35.kumar@gmail.com",
+                to: email,
+                subject,
+                text: message,
+                html,
+                attachments
+            }
+    
+            transporter.sendMail(mail_config);
+            response.status(200).json({ message: 'Mail Sent successfully' });
+        } catch (error) {
+            response.status(500).json({message: "Error occured while sending mail"})
+        }
+
     }
 };
 

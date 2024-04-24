@@ -22,7 +22,7 @@ const auth = {
         } catch(error) {
             response.status(500).json({ message: error.message });
         }
-    } 
+    }
 };
 
 export default auth;

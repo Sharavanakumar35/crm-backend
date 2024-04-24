@@ -3,8 +3,13 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const JobSchema = new Schema({
+    name: String,
+    email: String,
+    image: String,
     company: String,
     position: String,
+    experience: String,
+    performance: String,
     jobLocation: {
         type: String,
         default: 'Unknown'

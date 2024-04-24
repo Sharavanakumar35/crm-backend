@@ -3,7 +3,14 @@ import mongoose from 'mongoose';
 const userSchema = new mongoose.Schema({
     username: String,
     passwordHash: String,
-    name: String,
+    email: String,
+    pass: {
+        type: String,
+        default: ''
+    },
+    phone: String,
+    permissions: Object,
+    image: String,
     location: {
         type: String,
         default: 'Unknown'
@@ -12,6 +19,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'admin'],
         default: 'user',
+    },
+    instagramUrl: {
+        type: String,
+        default: ''
+    },
+    facebookUrl: {
+        type: String,
+        default: ''
+    },
+    twitterUrl: {
+        type: String,
+        default: ''
     }
 });
 

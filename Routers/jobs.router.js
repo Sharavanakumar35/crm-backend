@@ -9,5 +9,6 @@ jobRouter.get('/', auth.verifyToken, jobController.getAllJobs);
 jobRouter.get('/:id', auth.verifyToken, jobController.getJob);
 jobRouter.put('/:id', auth.verifyToken, jobController.updateJob);
 jobRouter.delete('/:id', auth.verifyToken, jobController.deleteJob);
+jobRouter.post("/sendMail", auth.verifyToken, jobController.sendMail);
 
 export default jobRouter;
