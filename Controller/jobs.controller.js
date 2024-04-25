@@ -24,14 +24,35 @@ const jobController = {
             response.status(500).json({ message: error.message });
         }
     },
+    // getAllJobs: async (request, response) => {
+    //     try {
+    //         const jobs = await Job.find();
+    //         response.status(200).json({ jobs });
+    //     } catch(error) {
+    //         response.status(500).json({ message: error.message });
+    //     }
+    // },
+
     getAllJobs: async (request, response) => {
         try {
-            const jobs = await Job.find();
+            // Get the user ID from the cookie
+            const userId = request.userId;
+    
+            // Check if userId is provided in the cookie
+            if (!userId) {
+                return response.status(400).json({ message: "User ID not provided in the cookie" });
+            }
+    
+            // Find jobs with the specified user ID
+            const jobs = await Job.find({ user: userId });
+    
+            // Return the filtered jobs
             response.status(200).json({ jobs });
         } catch(error) {
             response.status(500).json({ message: error.message });
         }
     },
+    
 
     getJob: async (request, response) => {
         try {
