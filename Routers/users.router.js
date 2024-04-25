@@ -4,6 +4,8 @@ import auth from '../Middleware/auth.js';
 
 const userRouter = express.Router();
 
+
+userRouter.get('/', auth.verifyToken, userController.getAllUsers);
 userRouter.post('/signup', userController.signup);
 userRouter.post('/signin', userController.signin);
 userRouter.get('/getUser', auth.verifyToken, userController.getUser);

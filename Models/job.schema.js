@@ -27,7 +27,8 @@ const JobSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User', 
-    }
+    },
+    createdBy: String,
 }, { timestamps: true });
 
 const Job = mongoose.model('Job', JobSchema, 'jobs');

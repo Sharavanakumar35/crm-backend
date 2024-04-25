@@ -9,6 +9,8 @@ import userRouter from "./Routers/users.router.js";
 
 const app = express();
 
+// http://localhost:5173
+// https://jobconnect-crm.netlify.app
 app.use(cors({
     origin: 'https://jobconnect-crm.netlify.app',
     credentials: true,

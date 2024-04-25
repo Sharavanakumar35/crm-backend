@@ -9,10 +9,20 @@ const userController = {
     signup: async (request, response) => {
         try {
             const { username, password, phone, email, image, location, role } = request.body;
-            const user = await User.findOne({ username });
-            if (user) {
-                return response.status(400).json({ message: 'User already exists' });
+            const userByUsername = await User.findOne({ username });
+            const userByEmail = await User.findOne({ email });
+
+            if (userByUsername && userByEmail) {
+          
+                return response.status(400).json({ message: 'User already exists with the same username and email' });
+            } else if (userByUsername) {
+              
+                return response.status(400).json({ message: 'User already exists with the same username' });
+            } else if (userByEmail) {
+                
+                return response.status(400).json({ message: 'User already exists with the same email' });
             }
+
             const permissions = role === 'admin' ? {mail: false, edit: true, delete: true} : {mail: false, edit: false, delete: false};
             const passwordHash = await bcrypt.hash(password, 10);
             const newUser = new User({ username, passwordHash, phone, email, location, role, image, permissions });
@@ -54,8 +64,25 @@ const userController = {
                 expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
                 secure: true,
             });
+            const isAdmin = user.role === 'admin' ? true : false;
+            response.cookie('admin', isAdmin);
             response.json({ message: 'User logged in', token });
         } catch(error) {
+            response.status(500).json({ message: error.message });
+        }
+    },
+
+    getAllUsers: async(request, response) => {
+        try {
+            const isAdmin = request.cookies.admin;
+
+            if (isAdmin) {
+                const users = await User.find();
+                response.status(200).json({users});
+            } else {
+                response.status(403).json({message: "Forbidden"});
+            }
+        } catch (error) {
             response.status(500).json({ message: error.message });
         }
     },
@@ -67,6 +94,7 @@ const userController = {
             if (!user) {
                 return response.status(400).json({ message: 'User not found' });
             }
+            console.log(request.cookies);
             response.json({ message: 'User found', user });
         } catch(error) {
             response.status(500).json({ message: error.message });
@@ -131,6 +159,7 @@ const userController = {
     logout: async (request, response) => {
         try {
             response.clearCookie('token');
+            response.clearCookie('admin');            
             response.json({ message: 'User logged out' });
         } catch(error) {
             response.status(500).json({ message: error.message });

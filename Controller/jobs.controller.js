@@ -1,10 +1,11 @@
+import { request, response } from "express";
 import Job from "../Models/job.schema.js";
 import nodemailer from "nodemailer";
 
 const jobController = {
     createJob: async (request, response) => {
         try {
-            const { name, image, email, company, position, experience, jobLocation, jobStatus, jobType, performance } = request.body;
+            const { name, image, email, company, position, experience, jobLocation, jobStatus, jobType, performance, createdBy } = request.body;
             const newJob = new Job({
                 name,
                 image,
@@ -16,6 +17,7 @@ const jobController = {
                 jobLocation,
                 jobStatus,
                 jobType,
+                createdBy,
                 user: request.userId
             });
             await newJob.save();
@@ -37,6 +39,9 @@ const jobController = {
         try {
             // Get the user ID from the cookie
             const userId = request.userId;
+            const isAdmin = request.cookies.admin;
+
+            console.log(request.cookies);
     
             // Check if userId is provided in the cookie
             if (!userId) {
@@ -44,7 +49,8 @@ const jobController = {
             }
     
             // Find jobs with the specified user ID
-            const jobs = await Job.find({ user: userId });
+            
+            const jobs = isAdmin === 'true' ? await Job.find() : await Job.find({ user: userId }).select('-user');
     
             // Return the filtered jobs
             response.status(200).json({ jobs });
@@ -92,6 +98,22 @@ const jobController = {
         }
     },
 
+    assignJob: async (request, response) => {
+        try {
+            const { id } = request.params;
+            const { createdBy, user } = request.body;
+            const updatedJob = await Job.findByIdAndUpdate(id, {
+                createdBy, user
+            }, { new: true });
+            if (!updatedJob) {
+                return response.status(404).json({ message: 'Job not found' });
+            }
+            response.status(200).json({ message: 'Job updated successfully', job: updatedJob });
+        } catch(error) {
+            response.status(500).json({ message: error.message });
+        }
+    },
+
     deleteJob: async (request, response) => {
         try {
             const { id } = request.params;
@@ -127,7 +149,7 @@ const jobController = {
             });
     
             const mail_config = {
-                from: "shark.35.kumar@gmail.com",
+                from: request.cookies.email,
                 to: email,
                 subject,
                 text: message,
