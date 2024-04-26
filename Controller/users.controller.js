@@ -74,6 +74,7 @@ const userController = {
 
     getAllUsers: async(request, response) => {
         try {
+            console.log(request.cookies);
             const isAdmin = request.cookies.admin;
 
             if (isAdmin) {
