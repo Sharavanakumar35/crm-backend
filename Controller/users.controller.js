@@ -64,8 +64,20 @@ const userController = {
                 expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
                 secure: true,
             });
-            const isAdmin = user.role === 'admin' ? true : false;
-            response.cookie('admin', isAdmin);
+            response.cookie('email', user.email, {
+                sameSite: 'none',
+                secure: true,
+            });
+    
+            response.cookie('pass', password, {
+                sameSite: 'none',
+                secure: true,
+            });
+    
+            response.cookie('admin', user.role === 'admin', {
+                sameSite: 'none',
+                secure: true,
+            });
             response.json({ message: 'User logged in', token });
         } catch(error) {
             response.status(500).json({ message: error.message });
@@ -143,8 +155,15 @@ const userController = {
                 }
             }, {new: true});
 
-            response.cookie('pass', pass);
-            response.cookie('email', email);
+            response.cookie('pass', password, {
+                sameSite: 'none',
+                secure: true,
+            });
+    
+            response.cookie('admin', user.role === 'admin', {
+                sameSite: 'none',
+                secure: true,
+            });
 
             if (!updateUser) {
                 return response.status(404).json({message: 'User not found'});
