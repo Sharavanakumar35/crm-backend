@@ -179,7 +179,9 @@ const userController = {
     logout: async (request, response) => {
         try {
             response.clearCookie('token');
-            response.clearCookie('admin');            
+            response.clearCookie('admin');
+            response.clearCookie('email');
+            response.clearCookie('pass');            
             response.json({ message: 'User logged out' });
         } catch(error) {
             response.status(500).json({ message: error.message });
