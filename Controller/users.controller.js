@@ -23,7 +23,7 @@ const userController = {
                 return response.status(400).json({ message: 'User already exists with the same email' });
             }
 
-            const permissions = role === 'admin' ? {mail: false, edit: true, delete: true} : {mail: false, edit: false, delete: false};
+            const permissions = role === 'admin' ? {mail: false, edit: true, delete: true, assign: true} : {mail: false, edit: true, delete: false, assign: false};
             const passwordHash = await bcrypt.hash(password, 10);
             const newUser = new User({ username, passwordHash, phone, email, location, role, image, permissions });
             const savedUser = await newUser.save();
