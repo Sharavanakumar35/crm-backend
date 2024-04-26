@@ -69,7 +69,7 @@ const userController = {
                 secure: true,
             });
     
-            response.cookie('pass', password, {
+            response.cookie('pass', user.pass, {
                 sameSite: 'none',
                 secure: true,
             });
