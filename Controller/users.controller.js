@@ -155,12 +155,7 @@ const userController = {
                 }
             }, {new: true});
 
-            response.cookie('pass', password, {
-                sameSite: 'none',
-                secure: true,
-            });
-    
-            response.cookie('admin', user.role === 'admin', {
+            response.cookie('pass', pass, {
                 sameSite: 'none',
                 secure: true,
             });
