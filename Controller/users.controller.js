@@ -133,6 +133,10 @@ const userController = {
             if (!updateUser) {
                 return response.status(404).json({message: 'User not found'});
             }
+            response.cookie('email', email, {
+                sameSite: 'none',
+                secure: true,
+            });
             response.status(200).json({message: 'User updated successfully'});
 
             
@@ -156,6 +160,11 @@ const userController = {
             }, {new: true});
 
             response.cookie('pass', pass, {
+                sameSite: 'none',
+                secure: true,
+            });
+
+            response.cookie('email', email, {
                 sameSite: 'none',
                 secure: true,
             });
